@@ -1,0 +1,68 @@
+
+html {
+	padding: 0;
+	margin: 0;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+}
+
+div {
+	box-sizing: border-box;
+}
+
+header {
+	padding: 1em;
+}
+
+h1 {
+	text-align: center;
+}
+
+#container {
+	background-color: #f99;
+	width: 50rem;
+	margin: 1rem auto;
+}
+
+#gameboard {
+	width: 40rem;
+	margin: 0 auto;
+	padding-bottom: 1rem;
+
+}
+
+.row {
+	width: 100%;
+	margin-bottom: 2rem;
+}
+
+.square {
+	float: left;
+	background-color: #ddd;
+	width: 30%;
+	margin-right: 5%;
+	height: 12rem;
+	font-family: sans-serif;
+	font-weight: bold;
+	font-size: 8em;
+	text-align: center;
+}
+
+.turn {
+	text-align: center;
+	font-size: 1.5em;
+	padding-bottom: 1em;
+}
+
+.square:last-child {
+	margin-right: 0;
+}
+
+.clearfix:after {
+	content: "";
+	display: table;
+	clear: both;
+}
