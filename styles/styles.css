@@ -14,11 +14,20 @@ div {
 }
 
 header {
-	padding: 1em;
+	padding: 1em 0;
 }
 
 h1 {
 	text-align: center;
+}
+
+h3 {
+	text-align: center;
+	height: 1em;
+	padding: .5em;
+	background-color: #afa; 
+	margin: 0;
+	margin-bottom: 1rem;
 }
 
 #container {
@@ -30,7 +39,6 @@ h1 {
 #gameboard {
 	width: 40rem;
 	margin: 0 auto;
-	padding-bottom: 1rem;
 
 }
 
@@ -47,7 +55,7 @@ h1 {
 	height: 12rem;
 	font-family: sans-serif;
 	font-weight: bold;
-	font-size: 8em;
+	font-size: 10em;
 	text-align: center;
 }
 

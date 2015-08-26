@@ -10,6 +10,7 @@ var winningLines = [ [0,1,2], [0,4,8], [0,3,6], [1,4,7],
 var players = [ 'O', 'X' ];
 
 var currentPlayer = 1;
+var turns = 0;
 
 $('.turn').text("It is "+players[ currentPlayer ]+"'s turn.");
 
@@ -38,12 +39,22 @@ function createBoard() {
 $('.square').on('click', takeTurn );
 
 function takeTurn(e) {
-	changeTheGrid(e);
-	checkForWin();
-	switchPlayers();
+	if( $(e.currentTarget).hasClass('X') || $(e.currentTarget).hasClass('O') ) {
+		$('.message').text("That space is already taken!");
+		setTimeout( function(){
+			$('.message').text("");
+		}, 2000);
+	} else {
+		turns++;
+		changeTheGrid(e);
+		checkForWin();
+		switchPlayers();
+	}
 }
 
 function changeTheGrid( e ) {
+	var playerClass = players[ currentPlayer ];
+	$(e.currentTarget).addClass( playerClass );
 	var position = $(e.currentTarget).attr('id').charAt(2);
 	gamegrid.splice( position, 1, currentPlayer );
 	$(e.currentTarget).text( players[ currentPlayer ] );
@@ -55,8 +66,10 @@ function checkForWin(){
 		// if all criteria match one of the winning circumstances
 		if( gamegrid[ line[0] ] == gamegrid[ line[1] ] && gamegrid[ line[1] ] == gamegrid[ line[2] ] ) {
 			if( gamegrid[ line[0] ] === 1 || gamegrid[ line[0] ] === 0 ) {
-				console.log( players[ gamegrid[ line[0] ] ] + " wins!");
+				$('.message').text( players[ gamegrid[ line[0] ] ] + " wins!");
 			}
+		} else if( turns === 9 ) {
+			$('.message').text( "Draw!" );
 		}
 	});
 }
