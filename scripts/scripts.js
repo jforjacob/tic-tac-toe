@@ -66,7 +66,7 @@ function takeTurn(e) {
 		$('.message').text("That space is already taken!");
 		$("div").velocity("callout.shake");
 		setTimeout( function() {
-			$('.message').text("");
+				$('.message').text("Round "+roundNum+" || Player "+players[0].name+": "+players[0].score+" || Player "+players[1].name+": "+players[1].score);
 		}, 2000 );
 		
 	} else {
@@ -83,11 +83,8 @@ function takeTurn(e) {
 			changeTheBoard(e);
 			switchPlayers();
 		}
-		
 	}
 }
-
-
 
 function changeArray(e) {
 	var position = $(e.target).attr('id').charAt(2);
@@ -96,18 +93,21 @@ function changeArray(e) {
 
 function checkForEnd(){
 	var end = false;
-	winningLines.forEach( function( line ) {
+	for( var i=0; i<winningLines.length; i++ ) {
+		var line = winningLines[i];
 		// if all criteria match one of the winning circumstances in array winningLines
 		if( gamegrid[ line[0] ] === gamegrid[ line[1] ] && gamegrid[ line[1] ] === gamegrid[ line[2] ] &&
 			( gamegrid[ line[0] ] === 1 || gamegrid[ line[0] ] === 0 ) ) {
 			$('.message').text( players[ gamegrid[ line[0] ] ].name + " wins!");
-			players[ gamegrid[ line[0] ] ].score++; // this can trigger multiple times - fix!
+			players[ gamegrid[ line[0] ] ].score++;
 			end = true;
-		} else if ( gamegrid.indexOf( null ) === -1 ) {
-			$('.message').text( "Draw!" );
-			end = true;
+			break;
 		}
-	});
+	}
+	if( !end && gamegrid.indexOf( null ) === -1 ) {
+		$('.message').text( "Draw!" );
+		end = true;
+	}
 	return end;
 }
 
