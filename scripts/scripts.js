@@ -17,20 +17,28 @@ var players = [ { 'mark': 'O',
 var currentPlayer = 1;
 var roundNum = 0;
 var roundOver = false;
-var gametype;
+var gametype = '';
+var message = $('<p>').addClass('message');
 
 
 $('.select-multi').on('click', function(){
 	gametype = 'multiplayer';
 	$('.prompt-players').remove();
+	$('.start').removeClass('hidden');
 	$('.start').removeClass('start');
+	$('.whose-turn').text("Player X goes first.");
+	$('.change-name').on('click', changeName );
 	createBoard();
 });
 
 $('.select-computer').on('click', function(){
 	gametype = 'computer';
 	$('.prompt-players').remove();
+	$('.start').removeClass('hidden');
 	$('.start').removeClass('start');
+	$('.whose-turn').text("You first, Player X.");
+	players[0].name = "Abacus";
+	$('.change-name').on('click', changeName );
 	createBoard();
 });
 
@@ -39,20 +47,8 @@ $('.select-computer').on('click', function(){
 function createBoard(e) {
 	gamegrid = [ null, null, null, null, null, null, null, null, null ];
 	$('#gameboard').empty();
-	if(roundNum > 0) {
-		switchPlayers();
-	} else {
-		$('.whose-turn').text("Player X goes first. ");
-		$('.change-name').on('click', changeName );
-	} 
 	roundNum++;
-	if (gametype === 'multiplayer') {
-		$('.multiplayer').removeClass('hidden'); // for multiplayer game
-	} else {
-		$('.computer').removeClass('hidden');
-		$('.output-o').html("Computer (O) &mdash; <span class='score'>"+players[0].score+"</span>")
-	}
-	$('.message').text('');
+	message.remove();
 	var sq = 0;
 	$('.output-round').text("Round "+roundNum);
 	updateScorecard();
@@ -70,31 +66,41 @@ function createBoard(e) {
 			square.appendTo( row );
 		}
 	}
-	$('.square').on('click', takeTurn );
+
+	if( gametype === "computer" && currentPlayer === 0 ) {
+		computerTurn();
+	} else {
+		$('.change-name').html('[change&nbsp;name]');
+		$('.square').on('click', humanTurn );
+	}
 }
 
-function takeTurn(e) {
+function humanTurn(e) {
+	// validation for taken spaces:
 	if( $(e.target).hasClass('X') || $(e.target).hasClass('O') ) {
-		$('.message').text("That space is already taken!");
+		message.text("That space is already taken!").appendTo( $('.small-corner') );
 		$("#gameboard").velocity("callout.shake");
 		setTimeout( function() {
-				$('.message').text("");
+				message.remove();
 		}, 2000 );
 		
+	// normal turn taken by player:
 	} else {
 		changeArray(e);
+		changeTheBoard(e);
 		roundOver = checkForEnd();
-		console.log(roundOver);
+		switchPlayers();
 		if(roundOver) {
-			$('.square').off('click', takeTurn );
-			changeTheBoard(e);
+			$('.change-name').text('');
+			$('.whose-turn').text('');
+			$('.square').off('click', humanTurn );
 			setTimeout( function(){
 				roundOver = false;
 				createBoard();
+				$('.whose-turn').text(players[ currentPlayer ].name+"'s turn.")
 			}, 2000);
-		} else {
-			changeTheBoard(e);
-			switchPlayers();
+		} else if( gametype === 'computer' ) {
+			computerTurn();
 		}
 	}
 }
@@ -111,14 +117,14 @@ function checkForEnd(){
 		// if all criteria match one of the winning circumstances in array winningLines
 		if( gamegrid[ line[0] ] === gamegrid[ line[1] ] && gamegrid[ line[1] ] === gamegrid[ line[2] ] &&
 			( gamegrid[ line[0] ] === 1 || gamegrid[ line[0] ] === 0 ) ) {
-			$('.message').text( players[ gamegrid[ line[0] ] ].name + " wins!");
+			message.text( players[ gamegrid[ line[0] ] ].name + " wins!").appendTo($('.small-corner'));
 			players[ gamegrid[ line[0] ] ].score++;
 			end = true;
 			break;
 		}
 	}
 	if( !end && gamegrid.indexOf( null ) === -1 ) {
-		$('.message').text( "Draw!" );
+		message.text( "Draw!" ).appendTo($('.small-corner'));
 		end = true;
 	}
 	return end;
@@ -140,7 +146,7 @@ function switchPlayers() {
 }
 
 function changeName() {
-	$('.square').off('click', takeTurn );
+	$('.square').off('click', humanTurn );
 	$('.change-name').off('click', changeName );
 	$('.whose-turn').addClass('hidden');
 	$('.change-name').text('[okay]');
@@ -157,7 +163,7 @@ function changeName() {
 			$('.change-name').html('[change&nbsp;name]');
 			$('.whose-turn').text(players[ currentPlayer ].name+"'s turn. ").removeClass('hidden');
 			updateScorecard();
-			$('.square').on('click', takeTurn );
+			$('.square').on('click', humanTurn );
 			$('.change-name').on('click', changeName );
 		}
 	}
@@ -177,7 +183,88 @@ function updateScorecard(){
 }
 
 function computerTurn() {
-
+	$('.square').off('click', humanTurn );
+	$('.change-name').addClass('hidden');
+	setTimeout ( function(){
+		var chosenPosition = choosePosition();
+		console.log( chosenPosition );
+		var targetId = "#sq"+chosenPosition;
+		console.log( targetId );
+		var playerMark = players[ currentPlayer ].mark;
+		$( targetId ).addClass( playerMark );
+		$( targetId ).text( playerMark );
+		gamegrid.splice( chosenPosition, 1, currentPlayer );
+		$('.change-name').removeClass('hidden');
+		roundOver = checkForEnd();
+		switchPlayers();
+		if(roundOver) {
+			setTimeout( function(){
+				roundOver = false;
+				createBoard();
+			}, 2000);
+		} else {
+			$('.square').on('click', humanTurn );
+			$('.change-name').html('[change&nbsp;name]');
+		}
+	}, 1500);
 }
+
+function choosePosition() {
+	var rankedMoves = [[9, 0]];
+	var chosenPosition, moveScore;
+	for( var i=0; i<winningLines.length; i++ ) {
+		var line = winningLines[i];
+		var seq = line.map( function(e) {
+			return gamegrid[e];
+		});
+		console.log( seq );
+		var countX =  countInArray( seq, 1);
+		var countO =  countInArray( seq, 0);
+		var countNull = countInArray( seq, null);
+		if( countNull === 0 ) {
+			moveScore = 0;
+		} else if( countO === 2 ) {
+			moveScore = 7;
+		} else if( countX === 2 ) {
+			moveScore = 4;
+			// if( ) to find perpendicular lines and moveScore += 2 or 1 if found
+		} else if( countO === 1 ) {
+			moveScore = 2;
+			// if( ) to find perpendicular lines and moveScore += 1 if found
+		} else if( countX === 1 ) {
+			moveScore = 1;
+		} else {
+			moveScore = 0;
+		}
+		rankedMoves = placeInOrderedArray( [ line[ seq.indexOf(null) ], moveScore ], rankedMoves );
+	}
+	console.log( rankedMoves );
+	chosenPosition = rankedMoves[0][0];
+	return chosenPosition;
+}
+
+function countInArray( arr, e ) {
+	var count = 0;
+	for( var j=0; j<arr.length; j++ ) {
+		if( arr[j] === e ) {
+			count++;
+		}
+	}
+	return count;
+}
+
+function placeInOrderedArray( e, arr ) {
+	for( var k=0; k<arr.length; k++ ) {
+		if( e[1] >= arr[k][1] ) {
+			arr.splice( k, 0, e );
+			return arr;
+		}
+	}
+}
+
+
+
+
+
 
 });

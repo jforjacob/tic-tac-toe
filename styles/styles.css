@@ -30,11 +30,18 @@ div, header {
 h1 {
 	font-size: 2em;
 	font-style: italic;
+	text-transform: uppercase;
 }
 
 h2 {
 	font-style: italic;
 	font-size: 2em;
+}
+
+h4 {
+	font-size: .8em;
+	text-transform: uppercase;
+	letter-spacing: .1em;
 }
 
 .subtitle {
@@ -119,7 +126,7 @@ h2 {
 
 .prompt-players {
 	margin-top: 1em;
-	font-size: 1.5em;
+	font-size: 1.4em;
 	line-height: 1.5em;
 }
 
@@ -129,11 +136,15 @@ h2 {
 	margin-top: .5em;
 }
 
+.or {
+	font-size: .8em;
+	font-style: italic;
+	text-transform: uppercase;
+}
+
 .select-multi, .select-computer {
 	color: #d00;
-	font-style: italic;
-/*	-webkit-text-decoration: underline dotted #d00;
-					text-decoration: underline dotted #d00;*/
+	/*font-style: italic;*/
 }
 
 .input-name {
@@ -153,12 +164,18 @@ h2 {
 	font-size: .8em;
 }
 
-.message {
-	color: #b00;
+p.message {
+	display: inline-block;
+	float: right;
+	color: #FED;
+	background-color: #900;
+	opacity: .7;
 	margin-top: 1em;
 	line-height: 1.2em;
-	font-size: 1em;
-	height: 1.2em;
+	font-size: 1.1em;
+	font-style: italic;
+	border-radius: .5em;
+	padding: .2em .4em;
 }
 
 .score {
@@ -204,6 +221,10 @@ h2 {
 
 	.turn {
 		margin-top: 1.5em;
+	}
+
+	p.message {
+		float: left;
 	}
 }
 
