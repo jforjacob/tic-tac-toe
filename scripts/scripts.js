@@ -8,54 +8,66 @@ var winningLines = [ [0,1,2], [0,4,8],
 										 [3,4,5], [6,7,8] ];
 
 var players = [ { 'mark': 'O',
-									'name': 'O',
+									'name': 'Player O',
 									'score': 0 },
 								{ 'mark': 'X',
-									'name': 'X',
+									'name': 'Player X',
 									'score': 0 } ];
 
-var currentPlayer = 0;
+var currentPlayer = 1;
 var roundNum = 0;
-var turns = 0;
 var roundOver = false;
+var gametype;
 
-// $.Velocity
-//     .RegisterEffect("transition.flipXIn", {
-//         defaultDuration: 700,
-//         calls: [
-//             [ { opacity: 1, rotateY: [ 0, -55 ] } ]
-//         ]
-//     });
 
-$('.turn').text("It is "+players[ currentPlayer ].name+"'s turn.");
+$('.select-multi').on('click', function(){
+	gametype = 'multiplayer';
+	$('.prompt-players').remove();
+	$('.start').removeClass('start');
+	createBoard();
+});
 
+$('.select-computer').on('click', function(){
+	gametype = 'computer';
+	$('.prompt-players').remove();
+	$('.start').removeClass('start');
+	createBoard();
+});
 
 // Make the game board:
 
-createBoard();
-
-function createBoard() {
+function createBoard(e) {
 	gamegrid = [ null, null, null, null, null, null, null, null, null ];
 	$('#gameboard').empty();
-	switchPlayers();
-	var sq = 0;
+	if(roundNum > 0) {
+		switchPlayers();
+	} else {
+		$('.whose-turn').text("Player X goes first. ");
+		$('.change-name').on('click', changeName );
+	} 
 	roundNum++;
-	$('.message').text("Round "+roundNum+" || Player "+players[0].name+": "+players[0].score+" || Player "+players[1].name+": "+players[1].score);
+	if (gametype === 'multiplayer') {
+		$('.multiplayer').removeClass('hidden'); // for multiplayer game
+	} else {
+		$('.computer').removeClass('hidden');
+		$('.output-o').html("Computer (O) &mdash; <span class='score'>"+players[0].score+"</span>")
+	}
+	$('.message').text('');
+	var sq = 0;
+	$('.output-round').text("Round "+roundNum);
+	updateScorecard();
 
 	for( var i=0; i<3; i++ ) {
 		var row = $('<div>').addClass('row clearfix');
 		row.appendTo( $('#gameboard') );
 
 		for( var j=0; j<3; j++ ) {
-			var square = $('<div>')
+			var square = $('<div>');
 			square.addClass('square');
 			var idName = 'sq'+sq;
 			square.attr('id', idName );
 			sq++;
 			square.appendTo( row );
-			// square.on('load', function() {
-			// 	square.velocity("transition.flipXin");
-			// });
 		}
 	}
 	$('.square').on('click', takeTurn );
@@ -64,16 +76,17 @@ function createBoard() {
 function takeTurn(e) {
 	if( $(e.target).hasClass('X') || $(e.target).hasClass('O') ) {
 		$('.message').text("That space is already taken!");
-		$("div").velocity("callout.shake");
+		$("#gameboard").velocity("callout.shake");
 		setTimeout( function() {
-				$('.message').text("Round "+roundNum+" || Player "+players[0].name+": "+players[0].score+" || Player "+players[1].name+": "+players[1].score);
+				$('.message').text("");
 		}, 2000 );
 		
 	} else {
 		changeArray(e);
 		roundOver = checkForEnd();
 		console.log(roundOver);
-		if(roundOver) { 
+		if(roundOver) {
+			$('.square').off('click', takeTurn );
 			changeTheBoard(e);
 			setTimeout( function(){
 				roundOver = false;
@@ -123,7 +136,48 @@ function switchPlayers() {
 	} else {
 		currentPlayer = 0;
 	}
-	$('.turn').text("It is "+players[ currentPlayer ].name+"'s turn.");
+	$('.whose-turn').text(players[ currentPlayer ].name+"'s turn. ");
+}
+
+function changeName() {
+	$('.square').off('click', takeTurn );
+	$('.change-name').off('click', changeName );
+	$('.whose-turn').addClass('hidden');
+	$('.change-name').text('[okay]');
+	$('.input-name').val( players[ currentPlayer ].name ).removeClass('hidden').focus();
+	$('.change-name').on('click', changedName );
+	$('.input-name').on('keypress', changedName );
+
+	function changedName(e){
+		if(e.which === 13 || e.which === 1) {
+			$('.change-name').off('click', changedName );
+			$('.input-name').off('keypress', changedName );
+			players[ currentPlayer ].name = $('.input-name').val();
+			$('.input-name').addClass('hidden');
+			$('.change-name').html('[change&nbsp;name]');
+			$('.whose-turn').text(players[ currentPlayer ].name+"'s turn. ").removeClass('hidden');
+			updateScorecard();
+			$('.square').on('click', takeTurn );
+			$('.change-name').on('click', changeName );
+		}
+	}
+}
+
+function updateScorecard(){
+	$('.output-x').html(players[1].name);
+	if( players[1].name !== "Player X" ) {
+		$('.output-x').append(" (X)");
+	}
+	$('.output-x').append(" &mdash; <span class='score'>"+players[1].score+"</span>");
+	$('.output-o').html(players[0].name);
+	if( players[0].name !== "Player O" ) {
+		$('.output-o').append(" (O)");
+	}
+	$('.output-o').append(" &mdash; <span class='score'>"+players[0].score+"</span>");
+}
+
+function computerTurn() {
+
 }
 
 });

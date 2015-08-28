@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <head>
 	<title>Tic Tac Toe</title>
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+	<link rel="stylesheet" type="text/css" href="/styles/reset.css" />
 	<link rel="stylesheet" type="text/css" href="/styles/styles.css" />
 	<script type="text/javascript" src="/scripts/jquery-2.1.4.min.js"></script>
 	<script type="text/javascript" src="/scripts/velocity.min.js"></script>
@@ -9,18 +11,31 @@
 </head>
 <body>
 
-<div id="container">
+<div id="container" class="clearfix start">
 
-<header>
-	<h1>Tic Tac Toe</h1>
-	<h3 class="message"></h3>
-</header>
+<div id="info-head" class="page-col clearfix start">
+	<header class="header start">
+		<h2>&THORN;e Olde</h2>
+		<h1>TIC-TAC-TOE</h1>
+		<h3 class="subtitle start">A Game of Naughts &amp; Crosses.</h3>
+		<div class="turn multiplayer hidden"><span class="whose-turn"></span><input type="text" class="input-name hidden" maxlength="12"><span class="change-name">[change&nbsp;name]</span></div>
+		<div class="prompt-players">
+			<p>Do you intend to <br/>
+			<span class="select-multi">challenge a compatriot</span> or <br/>
+			<span class="select-computer">play against the abacus</span>?</p>
+			<p class="decoration">#</p>
+		</div>
+	</header>
+	<div class="header small-corner multiplayer computer hidden">
+		<p class="output-round">Round 1</p>
+		<p class="output-x">Player X &mdash; <span class="score">0</score></p>
+		<p class="output-o">Player O &mdash; <span class="score">0</score></p>
+		<p class="message"></p>
+	</div>
+</div> <!-- end info-head -->
 
-
-
-	<div id="gameboard">
-	</div> <!-- end gameboard -->
-
-	<p class="turn"></p>
+<div id="gameboard" class="page-col">
+</div> <!-- end gameboard -->
+	
 </div> <!-- end container -->
 </body>

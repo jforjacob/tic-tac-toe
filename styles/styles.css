@@ -1,74 +1,247 @@
+@import url(https://fonts.googleapis.com/css?family=IM+Fell+English:400,400italic);
 
 html {
 	padding: 0;
 	margin: 0;
+	font-family: 'IM Fell English', serif;
 }
 
 body {
 	margin: 0;
 	padding: 0;
-	background-color: #336;
+	background-color: #AA9;
 }
 
-div {
+div, header {
 	box-sizing: border-box;
 }
 
-header {
-	padding: 1em 0;
+.header {
+	font-size: 1.3em;
+	padding: 1rem;
+	float: left;
+	width: 60%;
+}
+
+.small-corner {
+	width: 40%;
 }
 
 h1 {
-	text-align: center;
+	font-size: 2em;
+	font-style: italic;
 }
 
-h3 {
-	text-align: center;
-	font-size: .9em;
-	height: 1em;
-	padding: .5em;
-	background-color: #afa; 
-	margin: 0;
-	margin-bottom: 1rem;
-	font-family: Helvetica, sans-serif;
+h2 {
+	font-style: italic;
+	font-size: 2em;
+}
+
+.subtitle {
+	display: none;
+	font-size: 1.2em;
+	margin-top: .5em;
+	font-style: italic;
+}
+
+.subtitle.start {
+	display: block;
+}
+
+.small-corner p {
+	margin-bottom: .3em;
+	font-size: 1.2em;
+	text-align: right;
+}
+
+.output-round {
+	font-size: 1.4em;
+	text-decoration: underline;
 }
 
 #container {
-	background-color: #f99;
+	background-color: #FED;
 	max-width: 50rem;
-	margin: 0 auto;
+	margin: 2em auto;
+	padding: 2rem;
+}
+
+#container.start {
+	max-width: 25rem;
+	margin: 2em auto;
+	width: 70%;
+	min-width: 20rem;
+	text-align: center;
+}
+
+#info-head.start, .header.start {
+	width: 100%;
 }
 
 #gameboard {
-	width: 80%;
-	margin: 0 auto;
+	font-size: 10em;
+	padding: .1em;
 }
 
 .row {
 	width: 100%;
-	margin-bottom: 2rem;
+	margin-bottom: .2em;
+}
+
+.row:last-child {
+	margin-bottom: 0;
 }
 
 .square {
 	float: left;
-	background-color: #ddd;
+	background-color: #EDC;
 	width: 30%;
 	margin-right: 5%;
-	height: 12rem;
-	font-family: sans-serif;
-	font-weight: bold;
-	font-size: 10em;
+	height: 1.2em;
 	text-align: center;
-}
-
-.turn {
-	text-align: center;
-	font-size: 1.5em;
-	padding-bottom: 1em;
+	padding-top: .15em;
 }
 
 .square:last-child {
 	margin-right: 0;
+}
+
+.turn {
+	margin-top: .8em;
+	margin-left: .8em;
+	height: 3.5em;
+}
+
+.whose-turn {
+	font-size: 1.5em;
+	color: #b00;
+}
+
+.prompt-players {
+	margin-top: 1em;
+	font-size: 1.5em;
+	line-height: 1.5em;
+}
+
+.decoration {
+	font-size: 5em;
+	line-height: .2em;
+	margin-top: .5em;
+}
+
+.select-multi, .select-computer {
+	color: #d00;
+	font-style: italic;
+/*	-webkit-text-decoration: underline dotted #d00;
+					text-decoration: underline dotted #d00;*/
+}
+
+.input-name {
+	font-size: 1.5em;
+	font-family: 'IM Fell English', serif;
+	outline: none;
+	border: none;
+	padding-bottom: .2em;
+	background-color: #FED;
+	height: 1em;
+	width: 75%;
+	border-bottom: 1px solid #AA9;
+	line-height: 1em;
+}
+
+.change-name {
+	font-size: .8em;
+}
+
+.message {
+	color: #b00;
+	margin-top: 1em;
+	line-height: 1.2em;
+	font-size: 1em;
+	height: 1.2em;
+}
+
+.score {
+	line-height: 0;
+	font-size: 1.6em;
+	color: #080;
+}
+
+.hidden {
+	display: none;
+}
+
+@media (min-width: 1050px) {
+	.header {
+		float: none;
+		width: 100%;
+		/*padding: 1rem;*/
+	}
+
+	.subtitle {
+		display: block;
+	}
+
+	.page-col {
+		float: left;
+	}
+
+	#container {
+		max-width: 65rem;
+	}
+
+	#info-head {
+		width: 33%;
+	}
+
+	#gameboard {
+		width: 66%;
+	}
+
+	.small-corner p {
+		text-align: left;
+	}
+
+	.turn {
+		margin-top: 1.5em;
+	}
+}
+
+@media (max-width: 767px) {
+	#container {
+		font-size: 80%;
+		margin: 0;
+	}
+
+	#container.start {
+		margin: 0 auto;
+	}
+}
+
+@media (max-width: 500px) {
+	#container {
+		font-size: 60%;
+		padding: 2.5em 1.5em;
+	}
+
+	.header {
+		padding: 0;
+	}
+
+	.row {
+		margin-bottom: .1em;
+	}
+
+	.square {
+		width: 31%;
+		margin-right: 3.5%;
+		height: 1em;
+		padding-top: 0.1em;
+		font-size: .9em;
+	}
+
+
+
 }
 
 .clearfix:after {
