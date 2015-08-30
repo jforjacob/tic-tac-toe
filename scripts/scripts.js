@@ -21,7 +21,7 @@ var gametype = '';
 var message = $('<p>').addClass('message');
 
 
-$('.select-multi').on('click', function(){
+$('.multi').on('click', function(){
 	gametype = 'multiplayer';
 	$('.prompt-players').remove();
 	$('.start').removeClass('hidden');
@@ -31,7 +31,7 @@ $('.select-multi').on('click', function(){
 	createBoard();
 });
 
-$('.select-computer').on('click', function(){
+$('.computer').on('click', function(){
 	gametype = 'computer';
 	$('.prompt-players').remove();
 	$('.start').removeClass('hidden');

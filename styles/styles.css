@@ -106,7 +106,22 @@ h4 {
 	margin-right: 5%;
 	height: 1.2em;
 	text-align: center;
-	padding-top: .15em;
+	border: .1em solid #EDC;
+	padding-top: .05em;
+	cursor: pointer;
+	color: #EDC;
+}
+
+.square.X, .square.O {
+	color: #322;
+}
+
+.square:hover {
+	background-color: #dcb;
+}
+
+.square.X:hover, .square.O:hover {
+	background-color: #EDC;
 }
 
 .square:last-child {
@@ -142,9 +157,18 @@ h4 {
 	text-transform: uppercase;
 }
 
-.select-multi, .select-computer {
+.select {
+	display: inline-block;
 	color: #d00;
-	/*font-style: italic;*/
+	padding: .1em .5em;
+	margin: .2em;
+	border-radius: .3em;
+	background-color: #EDC;
+	cursor: pointer;
+}
+
+.select:hover {
+	background-color: #DCB;
 }
 
 .input-name {
@@ -162,6 +186,7 @@ h4 {
 
 .change-name {
 	font-size: .8em;
+	cursor: pointer;
 }
 
 p.message {
@@ -257,8 +282,8 @@ p.message {
 		width: 31%;
 		margin-right: 3.5%;
 		height: 1em;
-		padding-top: 0.1em;
 		font-size: .9em;
+		border: 0;
 	}
 
 
