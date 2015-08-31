@@ -2,6 +2,7 @@ $(function(){
 
 var gamegrid = [ null, null, null, null, null, null, null, null, null ];
 
+// possible winning lines
 var winningLines = [ [0,1,2], [0,4,8],
 										 [0,3,6], [1,4,7],
 										 [2,4,6], [2,5,8],
@@ -20,7 +21,7 @@ var roundOver = false;
 var gametype = '';
 var message = $('<p>').addClass('message');
 
-
+// listener for multiplayer game
 $('.multi').on('click', function(){
 	gametype = 'multiplayer';
 	$('.prompt-players').remove();
@@ -31,6 +32,7 @@ $('.multi').on('click', function(){
 	createBoard();
 });
 
+// listener for game vs. computer
 $('.computer').on('click', function(){
 	gametype = 'computer';
 	$('.prompt-players').remove();
@@ -105,6 +107,35 @@ function humanTurn(e) {
 	}
 }
 
+// everything that happens when the computer takes a turn:
+function computerTurn() {
+	// deactivate listeners & human-interactable elements
+	$('.square').off('click', humanTurn );
+	$('.change-name').addClass('hidden');
+	// timeout for 1.5 sec
+	setTimeout ( function(){
+		// use logic in function to choose move
+		var chosenPosition = choosePosition();
+		var targetId = "#sq"+chosenPosition;
+		var playerMark = players[ currentPlayer ].mark;
+		$( targetId ).addClass( playerMark );
+		$( targetId ).text( playerMark );
+		gamegrid.splice( chosenPosition, 1, currentPlayer );
+		$('.change-name').removeClass('hidden');
+		roundOver = checkForEnd();
+		switchPlayers();
+		if(roundOver) {
+			setTimeout( function(){
+				roundOver = false;
+				createBoard();
+			}, 2000);
+		} else {
+			$('.square').on('click', humanTurn );
+			$('.change-name').html('[change&nbsp;name]');
+		}
+	}, 1500);
+}
+
 function changeArray(e) {
 	var position = $(e.target).attr('id').charAt(2);
 	gamegrid.splice( position, 1, currentPlayer );
@@ -123,6 +154,7 @@ function checkForEnd(){
 			break;
 		}
 	}
+	// if no one has won and there are no more blank squares, call a draw.
 	if( !end && gamegrid.indexOf( null ) === -1 ) {
 		message.text( "Draw!" ).appendTo($('.small-corner'));
 		end = true;
@@ -182,35 +214,10 @@ function updateScorecard(){
 	$('.output-o').append(" &mdash; <span class='score'>"+players[0].score+"</span>");
 }
 
-function computerTurn() {
-	$('.square').off('click', humanTurn );
-	$('.change-name').addClass('hidden');
-	setTimeout ( function(){
-		var chosenPosition = choosePosition();
-		console.log( chosenPosition );
-		var targetId = "#sq"+chosenPosition;
-		console.log( targetId );
-		var playerMark = players[ currentPlayer ].mark;
-		$( targetId ).addClass( playerMark );
-		$( targetId ).text( playerMark );
-		gamegrid.splice( chosenPosition, 1, currentPlayer );
-		$('.change-name').removeClass('hidden');
-		roundOver = checkForEnd();
-		switchPlayers();
-		if(roundOver) {
-			setTimeout( function(){
-				roundOver = false;
-				createBoard();
-			}, 2000);
-		} else {
-			$('.square').on('click', humanTurn );
-			$('.change-name').html('[change&nbsp;name]');
-		}
-	}, 1500);
-}
 
+// Next three functions are computer logic for game
 function choosePosition() {
-	var rankedMoves = [[9, 0]];
+	var rankedMoves = [[9, -1]];
 	var chosenPosition, moveScore;
 	for( var i=0; i<winningLines.length; i++ ) {
 		var line = winningLines[i];
@@ -221,20 +228,23 @@ function choosePosition() {
 		var countX =  countInArray( seq, 1);
 		var countO =  countInArray( seq, 0);
 		var countNull = countInArray( seq, null);
+		// a score is assigned for each possible winning row
 		if( countNull === 0 ) {
 			moveScore = 0;
 		} else if( countO === 2 ) {
-			moveScore = 7;
+			moveScore = 9;
 		} else if( countX === 2 ) {
+			moveScore = 6;
+			// for more intelligence, if( ) to find perpendicular lines and moveScore += 2 or 1 if found
+		} else if( countO === 1 && countNull === 2 ) {
 			moveScore = 4;
-			// if( ) to find perpendicular lines and moveScore += 2 or 1 if found
-		} else if( countO === 1 ) {
+			// for more intelligence, if( ) to find perpendicular lines and moveScore += 1 if found
+		} else if( countX === 1 && countNull === 2 ) {
+			moveScore = 3;
+		} else if( countNull === 3 ) {
 			moveScore = 2;
-			// if( ) to find perpendicular lines and moveScore += 1 if found
-		} else if( countX === 1 ) {
+		}	else {
 			moveScore = 1;
-		} else {
-			moveScore = 0;
 		}
 		rankedMoves = placeInOrderedArray( [ line[ seq.indexOf(null) ], moveScore ], rankedMoves );
 	}
@@ -253,18 +263,22 @@ function countInArray( arr, e ) {
 	return count;
 }
 
+// [move, score] arrays are placed in order by score in ranked moves array
 function placeInOrderedArray( e, arr ) {
 	for( var k=0; k<arr.length; k++ ) {
 		if( e[1] >= arr[k][1] ) {
 			arr.splice( k, 0, e );
-			return arr;
+			// for more variety, randomize placement of equivelently scored moves
+			if( arr[0][1] === arr[1][1] ) {
+				var random = Math.random();
+				if( random > .5 ) {
+					arr.splice( 0, 1, arr[1] );
+				}
+			}
 		}
+		return arr;
 	}
 }
-
-
-
-
 
 
 });
